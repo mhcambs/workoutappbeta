@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>オーバーロード</title>
+    <link rel="manifest" href="manifest.json">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding-bottom: 80px;
+        }
+
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .asuka-comment {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            color: white;
+            padding: 15px;
+            margin: 10px 20px;
+            border-radius: 10px;
+            font-weight: bold;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(238, 90, 111, 0.4);
+            animation: slideIn 0.5s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(-20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        .container {
+            padding: 20px;
+        }
+
+        .tabs {
+            display: flex;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            border: none;
+            background: white;
+            font-size: 1em;
+            font-weight: bold;
+            color: #666;
+        }
+
+        .tab.active {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            transition: transform 0.2s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #95a5a6 0%, #7f8c8d 100%);
+        }
+
+        .sets-container {
+            margin: 20px 0;
+        }
+
+        .set-row {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+
+        .set-row input {
+            flex: 1;
+        }
+
+        .set-row button {
+            width: 40px;
+            padding: 10px;
+            margin: 0;
+        }
+
+        .suggestion-card {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        .suggestion-card h3 {
+            margin-bottom: 10px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            font-size: 2em;
+            margin-bottom: 5px;
+        }
+
+        .stat-card p {
+            font-size: 0.9em;
+            opacity: 0.9;
+        }
+
+        .chart-container {
+            margin: 30px 0;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .chart-container h3 {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .exercise-group {
+            margin-bottom: 30px;
+        }
+
+        .exercise-group h3 {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 10px;
+        }
+
+        .history-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-left: 4px solid #667eea;
+        }
+
+        .history-item h3 {
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        .history-item .meta {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .history-item .sets {
+            color: #555;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-group button {
+            flex: 1;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .period-filter {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .period-filter button {
+            flex: 1;
+            padding: 10px;
+            margin: 0;
+        }
+
+        @media (max-width: 768px) {
+            .tabs {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>💪 オーバーロード</h1>
+    </div>
+
+    <div id="asukaComment" class="asuka-comment" style="display: none;"></div>
+
+    <div class="container">
+        <div class="tabs">
+            <button class="tab active" onclick="switchTab('record')">記録</button>
+            <button class="tab" onclick="switchTab('stats')">統計</button>
+            <button class="tab" onclick="switchTab('history')">履歴</button>
+        </div>
+
+        <!-- 記録タブ -->
+        <div id="recordTab" class="tab-content active">
+            <div class="form-group">
+                <label>日付</label>
+                <input type="date" id="workoutDate">
+            </div>
+
+            <div class="form-group">
+                <label>種目</label>
+                <select id="exerciseSelect"></select>
+            </div>
+
+            <div id="suggestionCard" class="suggestion-card" style="display: none;">
+                <h3>🎯 今日のオーバーロード目標</h3>
+                <div id="suggestionText"></div>
+            </div>
+
+            <div class="sets-container">
+                <label>セット</label>
+                <div id="setsContainer"></div>
+                <button onclick="addSet()">➕ セット追加</button>
+            </div>
+
+            <button onclick="saveWorkout()">💾 記録を保存</button>
+        </div>
+
+        <!-- 統計タブ -->
+        <div id="statsTab" class="tab-content">
+            <div class="stats-grid" id="statsGrid"></div>
+            
+            <div class="period-filter">
+                <button class="btn-secondary" onclick="updateStatsForPeriod(7)">1週間</button>
+                <button class="btn-secondary" onclick="updateStatsForPeriod(30)">1ヶ月</button>
+                <button class="btn-secondary" onclick="updateStatsForPeriod(90)">3ヶ月</button>
+                <button class="btn-secondary" onclick="updateStatsForPeriod(0)">全期間</button>
+            </div>
+
+            <div id="bodyPartStats"></div>
+
+            <!-- 部位別ボリュームグラフ -->
+            <div class="chart-container">
+                <h3>📊 部位別トレーニングボリューム</h3>
+                <canvas id="volumeChart"></canvas>
+            </div>
+
+            <!-- オーバーロード推移グラフ -->
+            <div class="chart-container">
+                <h3>📈 オーバーロード推移</h3>
+                <canvas id="progressChart"></canvas>
+            </div>
+        </div>
+
+        <!-- 履歴タブ -->
+        <div id="historyTab" class="tab-content">
+            <div class="form-group">
+                <label>期間フィルター</label>
+                <div class="btn-group">
+                    <button class="btn-secondary" onclick="filterHistory(7)">1週間</button>
+                    <button class="btn-secondary" onclick="filterHistory(30)">1ヶ月</button>
+                    <button class="btn-secondary" onclick="filterHistory(90)">3ヶ月</button>
+                    <button class="btn-secondary" onclick="filterHistory(0)">全期間</button>
+                </div>
+            </div>
+            <button onclick="exportCSV()">📥 CSVエクスポート</button>
+            <button onclick="document.getElementById('csvInput').click()" class="btn-secondary">📤 CSVインポート</button>
+            <input type="file" id="csvInput" accept=".csv" style="display:none" onchange="importCSV(event)">
+            <div id="historyContainer"></div>
+        </div>
+    </div>
+
+    <!-- 編集モーダル -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <h2>📝 記録を編集</h2>
+            <div class="form-group">
+                <label>日付</label>
+                <input type="date" id="editDate">
+            </div>
+            <div class="form-group">
+                <label>種目</label>
+                <select id="editExercise"></select>
+            </div>
+            <div class="sets-container">
+                <label>セット</label>
+                <div id="editSetsContainer"></div>
+                <button onclick="addEditSet()">➕ セット追加</button>
+            </div>
+            <div class="btn-group">
+                <button onclick="updateWorkout()">💾 更新</button>
+                <button class="btn-secondary" onclick="closeEditModal()">キャンセル</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script>
+        const STORAGE_KEY = 'workoutApp';
+        const ASUKA_COMMENTS = {
+            success_overload: [
+                "やるじゃない！オーバーロード達成よ！",
+                "あんた、思ったより頑張るのね",
+                "完璧！この調子で続けなさい",
+                "素晴らしいわ！見直したわよ",
+                "オーバーロード成功！認めてあげる"
+            ],
+            fail_overload: [
+                "あら？今日は調子悪いの？",
+                "前回より落ちてるわよ。しっかりしなさい",
+                "ちょっと、手抜いてない？",
+                "まあ、たまにはそんな日もあるわね",
+                "次は頑張りなさいよ"
+            ],
+            long_interval: [
+                "久しぶりね。サボってたの？",
+                "随分空いたわね。筋肉落ちてない？",
+                "1週間以上空けるなんて...まあいいけど",
+                "ブランクあるけど大丈夫？ウォーミングアップしっかりね"
+            ],
+            consistent: [
+                "継続は力なり、ね。偉いじゃない",
+                "定期的に来てるわね。感心するわ",
+                "この調子！習慣化できてるじゃない",
+                "コンスタントに頑張ってるわね"
+            ],
+            first_time: [
+                "初めての記録ね。頑張りなさい",
+                "さあ、ここからスタートよ",
+                "最初が肝心よ。しっかりフォーム確認して"
+            ],
+            personal_best: [
+                "自己ベスト更新！すごいじゃない！",
+                "これまでで最高の記録よ！",
+                "パーソナルレコード達成！認めるわ",
+                "今日のあんた、輝いてるわよ"
+            ],
+            same_day_multiple: [
+                "今日2回目ね。追い込むわね",
+                "同じ部位を再度？やる気あるじゃない",
+                "2セッション目。疲れてない？"
+            ]
+        };
+
+        const EXERCISES = {
+            'bench_press': { name: 'ベンチプレス', bodyPart: '胸', defaultWeight: 0 },
+            'incline_bench': { name: 'インクラインベンチプレス', bodyPart: '胸', defaultWeight: 0 },
+            'dumbbell_press': { name: 'ダンベルプレス', bodyPart: '胸', defaultWeight: 0 },
+            'cable_fly': { name: 'ケーブルフライ', bodyPart: '胸', defaultWeight: 0 },
+            'push_up': { name: '腕立て伏せ', bodyPart: '胸', defaultWeight: 0 },
+            'squat': { name: 'スクワット', bodyPart: '脚', defaultWeight: 0 },
+            'leg_press': { name: 'レッグプレス', bodyPart: '脚', defaultWeight: 0 },
+            'leg_curl': { name: 'レッグカール', bodyPart: '脚', defaultWeight: 0 },
+            'leg_extension': { name: 'レッグエクステンション', bodyPart: '脚', defaultWeight: 0 },
+            'hip_thrust': { name: 'ヒップスラスト', bodyPart: '脚', defaultWeight: 0 },
+            'hip_abductor': { name: 'ヒップアブダクター', bodyPart: '脚', defaultWeight: 0 },
+            'bulgarian_squat': { name: 'ブルガリアンスクワット', bodyPart: '脚', defaultWeight: 0 },
+            'deadlift': { name: 'デッドリフト', bodyPart: '背中', defaultWeight: 0 },
+            'lat_pulldown': { name: 'ラットプルダウン', bodyPart: '背中', defaultWeight: 0 },
+            'barbell_row': { name: 'バーベルロウ', bodyPart: '背中', defaultWeight: 0 },
+            'cable_seated_row': { name: 'ケーブルシーテッドロウ', bodyPart: '背中', defaultWeight: 0 },
+            'pull_up': { name: '懸垂', bodyPart: '背中', defaultWeight: 0 },
+            'shoulder_press': { name: 'ショルダープレス', bodyPart: '肩', defaultWeight: 0 },
+            'lateral_raise': { name: 'サイドレイズ', bodyPart: '肩', defaultWeight: 0 },
+            'rear_delt_fly': { name: 'リアデルトフライ', bodyPart: '肩', defaultWeight: 0 },
+            'barbell_curl': { name: 'バーベルカール', bodyPart: '腕', defaultWeight: 0 },
+            'tricep_extension': { name: 'トライセプスエクステンション', bodyPart: '腕', defaultWeight: 0 },
+            'dips': { name: 'ディップス', bodyPart: '腕', defaultWeight: 0 },
+            'sit_up': { name: '腹筋', bodyPart: '腹', defaultWeight: 0 },
+            'plank': { name: 'プランク', bodyPart: '腹', defaultWeight: 0 }
+        };
+
+        let workoutData = loadData();
+        let currentEditId = null;
+        let volumeChart = null;
+        let progressChart = null;
+        let currentPeriodDays = 0;
+
+        function loadData() {
+            const data = localStorage.getItem(STORAGE_KEY);
+            return data ? JSON.parse(data) : { workouts: [] };
+        }
+
+        function saveData() {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(workoutData));
+        }
+
+        function init() {
+            document.getElementById('workoutDate').valueAsDate = new Date();
+            populateExerciseSelect();
+            addSet();
+            updateStats();
+            updateHistory();
+        }
+
+        function populateExerciseSelect() {
+            const select = document.getElementById('exerciseSelect');
+            const editSelect = document.getElementById('editExercise');
+            
+            // 部位ごとにグループ化
+            const byBodyPart = {};
+            Object.entries(EXERCISES).forEach(([key, ex]) => {
+                if (!byBodyPart[ex.bodyPart]) {
+                    byBodyPart[ex.bodyPart] = [];
+                }
+                byBodyPart[ex.bodyPart].push({ key, name: ex.name });
+            });
+
+            [select, editSelect].forEach(sel => {
+                sel.innerHTML = '<option value="">選択してください</option>';
+                
+                // 部位ごとにoptgroup作成
+                Object.entries(byBodyPart).forEach(([bodyPart, exercises]) => {
+                    const optgroup = document.createElement('optgroup');
+                    optgroup.label = `━━ ${bodyPart} ━━`;
+                    
+                    exercises.forEach(ex => {
+                        const option = document.createElement('option');
+                        option.value = ex.key;
+                        option.textContent = ex.name;
+                        optgroup.appendChild(option);
+                    });
+                    
+                    sel.appendChild(optgroup);
+                });
+            });
+
+            select.addEventListener('change', showOverloadSuggestion);
+        }
+
+        function addSet() {
+            const container = document.getElementById('setsContainer');
+            const div = document.createElement('div');
+            div.className = 'set-row';
+            div.innerHTML = `
+                <input type="number" placeholder="重量(kg)" step="0.1">
+                <input type="number" placeholder="回数" step="1">
+                <button onclick="this.parentElement.remove()" class="btn-danger">✖</button>
+            `;
+            container.appendChild(div);
+        }
+
+        function addEditSet() {
+            const container = document.getElementById('editSetsContainer');
+            const div = document.createElement('div');
+            div.className = 'set-row';
+            div.innerHTML = `
+                <input type="number" placeholder="重量(kg)" step="0.1">
+                <input type="number" placeholder="回数" step="1">
+                <button onclick="this.parentElement.remove()" class="btn-danger">✖</button>
+            `;
+            container.appendChild(div);
+        }
+
+        function getSets(containerId) {
+            const container = document.getElementById(containerId);
+            const sets = [];
+            Array.from(container.children).forEach(row => {
+                const inputs = row.querySelectorAll('input');
+                const weight = parseFloat(inputs[0].value) || 0;
+                const reps = parseInt(inputs[1].value) || 0;
+                if (weight > 0 || reps > 0) {
+                    sets.push({ weight, reps });
+                }
+            });
+            return sets;
+        }
+
+        function calculateTotalVolume(sets) {
+            return sets.reduce((sum, set) => sum + (set.weight * set.reps), 0);
+        }
+
+        function getLastWorkoutForDate(exercise, date, bodyPart) {
+            const sameDay = workoutData.workouts.filter(w => 
+                w.date === date && w.exercise === exercise
+            );
+
+            if (sameDay.length > 0) {
+                const allSets = sameDay.flatMap(w => w.sets);
+                return {
+                    sets: allSets,
+                    totalVolume: calculateTotalVolume(allSets),
+                    date: date
+                };
+            }
+
+            const previousWorkouts = workoutData.workouts
+                .filter(w => w.exercise === exercise && w.date < date)
+                .sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            if (previousWorkouts.length === 0) return null;
+
+            const lastDate = previousWorkouts[0].date;
+            const lastDayWorkouts = previousWorkouts.filter(w => w.date === lastDate);
+            const allSets = lastDayWorkouts.flatMap(w => w.sets);
+
+            return {
+                sets: allSets,
+                totalVolume: calculateTotalVolume(allSets),
+                date: lastDate
+            };
+        }
+
+        function getBodyPartSuggestion(bodyPart, date) {
+            const bodyPartWorkouts = workoutData.workouts
+                .filter(w => EXERCISES[w.exercise]?.bodyPart === bodyPart && w.date < date);
+
+            if (bodyPartWorkouts.length === 0) return null;
+
+            const byDate = {};
+            bodyPartWorkouts.forEach(w => {
+                if (!byDate[w.date]) byDate[w.date] = [];
+                byDate[w.date].push(w);
+            });
+
+            const dailyVolumes = Object.entries(byDate).map(([date, workouts]) => {
+                const totalVolume = workouts.reduce((sum, w) => 
+                    sum + calculateTotalVolume(w.sets), 0
+                );
+                return { date, totalVolume, workouts };
+            }).sort((a, b) => new Date(b.date) - new Date(a.date));
+
+            if (dailyVolumes.length === 0) return null;
+
+            const lastWorkout = dailyVolumes[0];
+            return {
+                date: lastWorkout.date,
+                totalVolume: lastWorkout.totalVolume,
+                target: Math.ceil(lastWorkout.totalVolume * 1.025),
+                exercises: lastWorkout.workouts.map(w => EXERCISES[w.exercise].name)
+            };
+        }
+
+        function showOverloadSuggestion() {
+            const exercise = document.getElementById('exerciseSelect').value;
+            const date = document.getElementById('workoutDate').value;
+            const card = document.getElementById('suggestionCard');
+            const text = document.getElementById('suggestionText');
+
+            if (!exercise || !date) {
+                card.style.display = 'none';
+                return;
+            }
+
+            const bodyPart = EXERCISES[exercise].bodyPart;
+            const lastWorkout = getLastWorkoutForDate(exercise, date, bodyPart);
+            const bodyPartSuggestion = getBodyPartSuggestion(bodyPart, date);
+
+            if (!lastWorkout && !bodyPartSuggestion) {
+                text.innerHTML = '<p>初回の記録です。頑張りましょう！</p>';
+                card.style.display = 'block';
+                return;
+            }
+
+            let html = '';
+
+            if (lastWorkout) {
+                const targetVolume = Math.ceil(lastWorkout.totalVolume * 1.025);
+                html += `
+                    <p><strong>${EXERCISES[exercise].name}</strong></p>
+                    <p>前回（${lastWorkout.date}）: ${lastWorkout.totalVolume.toFixed(1)}kg</p>
+                    <p>目標: <strong>${targetVolume}kg</strong> (+2.5%)</p>
+                `;
+            }
+
+            if (bodyPartSuggestion) {
+                html += `
+                    <hr style="margin: 15px 0; border: 1px solid rgba(255,255,255,0.3);">
+                    <p><strong>【${bodyPart}の日】全体目標</strong></p>
+                    <p>前回（${bodyPartSuggestion.date}）: ${bodyPartSuggestion.totalVolume.toFixed(1)}kg</p>
+                    <p>目標: <strong>${bodyPartSuggestion.target}kg</strong></p>
+                    <p style="font-size: 0.9em; opacity: 0.9;">種目: ${bodyPartSuggestion.exercises.join(', ')}</p>
+                `;
+            }
+
+            text.innerHTML = html;
+            card.style.display = 'block';
+        }
+
+        function getAsukaComment(workout) {
+            const exercise = workout.exercise;
+            const date = workout.date;
+            const bodyPart = EXERCISES[exercise].bodyPart;
+            const currentVolume = calculateTotalVolume(workout.sets);
+
+            const sameDayCount = workoutData.workouts.filter(w => 
+                w.date === date && w.exercise === exercise
+            ).length;
+
+            if (sameDayCount > 0) {
+                return randomChoice(ASUKA_COMMENTS.same_day_multiple);
+            }
+
+            const previousWorkouts = workoutData.workouts.filter(w => w.exercise === exercise);
+            if (previousWorkouts.length === 0) {
+                return randomChoice(ASUKA_COMMENTS.first_time);
+            }
+
+            const lastDate = new Date(previousWorkouts[previousWorkouts.length - 1].date);
+            const currentDate = new Date(date);
+            const daysDiff = Math.floor((currentDate - lastDate) / (1000 * 60 * 60 * 24));
+
+            if (daysDiff > 7) {
+                return randomChoice(ASUKA_COMMENTS.long_interval);
+            }
+
+            if (daysDiff <= 3) {
+                return randomChoice(ASUKA_COMMENTS.consistent);
+            }
+
+            const lastWorkout = getLastWorkoutForDate(exercise, date, bodyPart);
+            if (lastWorkout && lastWorkout.date !== date) {
+                const lastVolume = lastWorkout.totalVolume;
+                const targetVolume = lastVolume * 1.025;
+
+                if (currentVolume >= targetVolume) {
+                    const allVolumes = previousWorkouts.map(w => calculateTotalVolume(w.sets));
+                    const maxVolume = Math.max(...allVolumes);
+                    
+                    if (currentVolume > maxVolume) {
+                        return randomChoice(ASUKA_COMMENTS.personal_best);
+                    }
+                    return randomChoice(ASUKA_COMMENTS.success_overload);
+                } else {
+                    return randomChoice(ASUKA_COMMENTS.fail_overload);
+                }
+            }
+
+            return randomChoice(ASUKA_COMMENTS.success_overload);
+        }
+
+        function randomChoice(array) {
+            return array[Math.floor(Math.random() * array.length)];
+        }
+
+        function showAsukaComment(comment) {
+            const div = document.getElementById('asukaComment');
+            div.textContent = comment;
+            div.style.display = 'block';
+            setTimeout(() => {
+                div.style.display = 'none';
+            }, 5000);
+        }
+
+        function saveWorkout() {
+            const date = document.getElementById('workoutDate').value;
+            const exercise = document.getElementById('exerciseSelect').value;
+            const sets = getSets('setsContainer');
+
+            if (!date || !exercise || sets.length === 0) {
+                alert('すべての項目を入力してください');
+                return;
+            }
+
+            const workout = {
+                id: Date.now(),
+                date,
+                exercise,
+                sets,
+                timestamp: new Date().toISOString()
+            };
+
+            workoutData.workouts.push(workout);
+            saveData();
+
+            const comment = getAsukaComment(workout);
+            showAsukaComment(comment);
+
+            document.getElementById('setsContainer').innerHTML = '';
+            addSet();
+            document.getElementById('exerciseSelect').value = '';
+            document.getElementById('suggestionCard').style.display = 'none';
+
+            updateStats();
+            updateHistory();
+
+            alert('記録を保存しました！');
+        }
+
+        function updateStatsForPeriod(days) {
+            currentPeriodDays = days;
+            updateStats();
+        }
+
+        function updateStats() {
+            const grid = document.getElementById('statsGrid');
+            
+            // 期間フィルタリング
+            let filteredWorkouts = workoutData.workouts;
+            if (currentPeriodDays > 0) {
+                const cutoffDate = new Date();
+                cutoffDate.setDate(cutoffDate.getDate() - currentPeriodDays);
+                filteredWorkouts = workoutData.workouts.filter(w => 
+                    new Date(w.date) >= cutoffDate
+                );
+            }
+
+            const totalWorkouts = filteredWorkouts.length;
+            const totalVolume = filteredWorkouts.reduce((sum, w) => 
+                sum + calculateTotalVolume(w.sets), 0
+            );
+
+            // 部位別統計
+            const byBodyPart = {};
+            filteredWorkouts.forEach(w => {
+                const bodyPart = EXERCISES[w.exercise]?.bodyPart || '不明';
+                if (!byBodyPart[bodyPart]) {
+                    byBodyPart[bodyPart] = { volume: 0, count: 0 };
+                }
+                byBodyPart[bodyPart].volume += calculateTotalVolume(w.sets);
+                byBodyPart[bodyPart].count++;
+            });
+
+            grid.innerHTML = `
+                <div class="stat-card">
+                    <h3>${totalWorkouts}</h3>
+                    <p>総記録数</p>
+                </div>
+                <div class="stat-card">
+                    <h3>${totalVolume.toFixed(0)}</h3>
+                    <p>総重量(kg)</p>
+                </div>
+            `;
+
+            // 部位別カード
+            const bodyPartStats = document.getElementById('bodyPartStats');
+            bodyPartStats.innerHTML = '<h2 style="margin: 20px 0;">部位別統計</h2>';
+            
+            Object.entries(byBodyPart).forEach(([part, data]) => {
+                const card = document.createElement('div');
+                card.className = 'stat-card';
+                card.style.marginBottom = '10px';
+                card.innerHTML = `
+                    <h3>${data.volume.toFixed(0)}kg</h3>
+                    <p>${part}（${data.count}回）</p>
+                `;
+                bodyPartStats.appendChild(card);
+            });
+
+            // グラフ更新
+            updateVolumeChart(byBodyPart);
+            updateProgressChart(filteredWorkouts);
+        }
+
+        function updateVolumeChart(byBodyPart) {
+            const ctx = document.getElementById('volumeChart');
+            
+            if (volumeChart) {
+                volumeChart.destroy();
+            }
+
+            const labels = Object.keys(byBodyPart);
+            const data = Object.values(byBodyPart).map(d => d.volume);
+
+            volumeChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'トレーニングボリューム (kg)',
+                        data: data,
+                        backgroundColor: 'rgba(102, 126, 234, 0.8)',
+                        borderColor: 'rgba(102, 126, 234, 1)',
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateProgressChart(workouts) {
+            const ctx = document.getElementById('progressChart');
+            
+            if (progressChart) {
+                progressChart.destroy();
+            }
+
+            // 日付ごとの総重量を計算
+            const byDate = {};
+            workouts.forEach(w => {
+                if (!byDate[w.date]) {
+                    byDate[w.date] = 0;
+                }
+                byDate[w.date] += calculateTotalVolume(w.sets);
+            });
+
+            const sortedDates = Object.keys(byDate).sort();
+            const volumes = sortedDates.map(date => byDate[date]);
+
+            progressChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: sortedDates,
+                    datasets: [{
+                        label: '総重量 (kg)',
+                        data: volumes,
+                        borderColor: 'rgba(79, 172, 254, 1)',
+                        backgroundColor: 'rgba(79, 172, 254, 0.2)',
+                        borderWidth: 3,
+                        fill: true,
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateHistory() {
+            const container = document.getElementById('historyContainer');
+            const workouts = [...workoutData.workouts].sort((a, b) => 
+                new Date(b.date) - new Date(a.date) || b.timestamp.localeCompare(a.timestamp)
+            );
+
+            // 部位ごとにグループ化
+            const byBodyPart = {};
+            workouts.forEach(workout => {
+                const bodyPart = EXERCISES[workout.exercise]?.bodyPart || '不明';
+                if (!byBodyPart[bodyPart]) {
+                    byBodyPart[bodyPart] = [];
+                }
+                byBodyPart[bodyPart].push(workout);
+            });
+
+            container.innerHTML = '';
+
+            Object.entries(byBodyPart).forEach(([bodyPart, workouts]) => {
+                const group = document.createElement('div');
+                group.className = 'exercise-group';
+                group.innerHTML = `<h3>💪 ${bodyPart}</h3>`;
+
+                workouts.forEach(workout => {
+                    const volume = calculateTotalVolume(workout.sets);
+                    const div = document.createElement('div');
+                    div.className = 'history-item';
+                    div.innerHTML = `
+                        <h3>${EXERCISES[workout.exercise]?.name || workout.exercise}</h3>
+                        <div class="meta">${workout.date}</div>
+                        <div class="sets">
+                            ${workout.sets.map((s, i) => `セット${i + 1}: ${s.weight}kg × ${s.reps}回`).join('<br>')}
+                        </div>
+                        <div class="meta">総重量: ${volume.toFixed(1)}kg</div>
+                        <div class="btn-group">
+                            <button class="btn-secondary" onclick="editWorkout(${workout.id})">編集</button>
+                            <button class="btn-danger" onclick="deleteWorkout(${workout.id})">削除</button>
+                        </div>
+                    `;
+                    group.appendChild(div);
+                });
+
+                container.appendChild(group);
+            });
+        }
+
+        function editWorkout(id) {
+            const workout = workoutData.workouts.find(w => w.id === id);
+            if (!workout) return;
+
+            currentEditId = id;
+            document.getElementById('editDate').value = workout.date;
+            document.getElementById('editExercise').value = workout.exercise;
+
+            const container = document.getElementById('editSetsContainer');
+            container.innerHTML = '';
+            workout.sets.forEach(set => {
+                const div = document.createElement('div');
+                div.className = 'set-row';
+                div.innerHTML = `
+                    <input type="number" value="${set.weight}" step="0.1">
+                    <input type="number" value="${set.reps}" step="1">
+                    <button onclick="this.parentElement.remove()" class="btn-danger">✖</button>
+                `;
+                container.appendChild(div);
+            });
+
+            document.getElementById('editModal').classList.add('active');
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').classList.remove('active');
+            currentEditId = null;
+        }
+
+        function updateWorkout() {
+            if (!currentEditId) return;
+
+            const date = document.getElementById('editDate').value;
+            const exercise = document.getElementById('editExercise').value;
+            const sets = getSets('editSetsContainer');
+
+            if (!date || !exercise || sets.length === 0) {
+                alert('すべての項目を入力してください');
+                return;
+            }
+
+            const index = workoutData.workouts.findIndex(w => w.id === currentEditId);
+            if (index !== -1) {
+                workoutData.workouts[index] = {
+                    ...workoutData.workouts[index],
+                    date,
+                    exercise,
+                    sets
+                };
+                saveData();
+                updateStats();
+                updateHistory();
+                closeEditModal();
+                alert('記録を更新しました！');
+            }
+        }
+
+        function deleteWorkout(id) {
+            if (!confirm('この記録を削除しますか？')) return;
+
+            workoutData.workouts = workoutData.workouts.filter(w => w.id !== id);
+            saveData();
+            updateStats();
+            updateHistory();
+        }
+
+        function filterHistory(days) {
+            const container = document.getElementById('historyContainer');
+            let workouts = [...workoutData.workouts];
+
+            if (days > 0) {
+                const cutoffDate = new Date();
+                cutoffDate.setDate(cutoffDate.getDate() - days);
+                workouts = workouts.filter(w => new Date(w.date) >= cutoffDate);
+            }
+
+            workouts.sort((a, b) => 
+                new Date(b.date) - new Date(a.date) || b.timestamp.localeCompare(a.timestamp)
+            );
+
+            const byBodyPart = {};
+            workouts.forEach(workout => {
+                const bodyPart = EXERCISES[workout.exercise]?.bodyPart || '不明';
+                if (!byBodyPart[bodyPart]) {
+                    byBodyPart[bodyPart] = [];
+                }
+                byBodyPart[bodyPart].push(workout);
+            });
+
+            container.innerHTML = '';
+
+            Object.entries(byBodyPart).forEach(([bodyPart, workouts]) => {
+                const group = document.createElement('div');
+                group.className = 'exercise-group';
+                group.innerHTML = `<h3>💪 ${bodyPart}</h3>`;
+
+                workouts.forEach(workout => {
+                    const volume = calculateTotalVolume(workout.sets);
+                    const div = document.createElement('div');
+                    div.className = 'history-item';
+                    div.innerHTML = `
+                        <h3>${EXERCISES[workout.exercise]?.name || workout.exercise}</h3>
+                        <div class="meta">${workout.date}</div>
+                        <div class="sets">
+                            ${workout.sets.map((s, i) => `セット${i + 1}: ${s.weight}kg × ${s.reps}回`).join('<br>')}
+                        </div>
+                        <div class="meta">総重量: ${volume.toFixed(1)}kg</div>
+                        <div class="btn-group">
+                            <button class="btn-secondary" onclick="editWorkout(${workout.id})">編集</button>
+                            <button class="btn-danger" onclick="deleteWorkout(${workout.id})">削除</button>
+                        </div>
+                    `;
+                    group.appendChild(div);
+                });
+
+                container.appendChild(group);
+            });
+        }
+
+        function exportCSV() {
+            const BOM = '\uFEFF';
+            let csv = BOM + 'ID,日付,種目,部位,セット番号,重量(kg),回数,総重量(kg)\n';
+            
+            workoutData.workouts.forEach(workout => {
+                const volume = calculateTotalVolume(workout.sets);
+                workout.sets.forEach((set, i) => {
+                    csv += `${workout.id},${workout.date},${EXERCISES[workout.exercise]?.name},${EXERCISES[workout.exercise]?.bodyPart},${i + 1},${set.weight},${set.reps},${volume}\n`;
+                });
+            });
+
+            const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `workout_data_${new Date().toISOString().split('T')[0]}.csv`;
+            link.click();
+        }
+
+        function importCSV(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                const text = e.target.result;
+                const lines = text.split('\n').slice(1);
+
+                const imported = {};
+                lines.forEach(line => {
+                    if (!line.trim()) return;
+                    const [id, date, , , , weight, reps] = line.split(',');
+                    
+                    if (!imported[id]) {
+                        imported[id] = {
+                            id: parseInt(id),
+                            date,
+                            exercise: Object.keys(EXERCISES).find(k => 
+                                EXERCISES[k].name === line.split(',')[2]
+                            ),
+                            sets: []
+                        };
+                    }
+                    
+                    imported[id].sets.push({
+                        weight: parseFloat(weight),
+                        reps: parseInt(reps)
+                    });
+                });
+
+                Object.values(imported).forEach(workout => {
+                    const exists = workoutData.workouts.some(w => w.id === workout.id);
+                    if (!exists) {
+                        workoutData.workouts.push(workout);
+                    }
+                });
+
+                saveData();
+                updateStats();
+                updateHistory();
+                alert('CSVをインポートしました！');
+            };
+            reader.readAsText(file);
+        }
+
+        function switchTab(tab) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+
+            event.target.classList.add('active');
+            document.getElementById(tab + 'Tab').classList.add('active');
+
+            if (tab === 'stats') updateStats();
+            if (tab === 'history') updateHistory();
+        }
+
+        init();
+
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('service-worker.js');
+        }
+    </script>
+</body>
+</html>
