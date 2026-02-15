@@ -1,7 +1,7 @@
 {
   "name": "オーバーロード",
   "short_name": "オーバーロード",
-  "description": "個人用筋トレ記録アプリ",
+  "description": "個人用筋トレ記録アプリ v4.1",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",
